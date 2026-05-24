@@ -1,0 +1,58 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Mrs Malmi — Local Development Docker Compose
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: mrs-malmi-bot
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/mrs-malmi
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+
+  mongo:
+    image: mongo:7
+    container_name: mrs-malmi-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: mrs-malmi-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+  redis_data:
