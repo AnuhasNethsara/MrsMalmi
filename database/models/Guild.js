@@ -105,7 +105,30 @@ const guildSchema = new Schema({
     provider: { type: String, default: 'openai' },
     rateLimit: { type: Number, default: 10 },
     faq: [{ question: String, answer: String }]
-  }
+  },
+
+  // ── Economy Settings ────────────────────────────────────────────────────────
+  economy: {
+    shopItems: [{
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      description: { type: String, default: '' },
+    }],
+  },
+
+  // ── Starboard Settings ──────────────────────────────────────────────────────
+  starboard: {
+    channelId: { type: String, default: null },
+    threshold: { type: Number, default: 3 },
+  },
+
+  // ── Auto Voice Settings ─────────────────────────────────────────────────────
+  autoVoice: {
+    channelId: { type: String, default: null },
+  },
+
+  // ── Application Settings ────────────────────────────────────────────────────
+  applications: { type: Map, of: new Schema({ questions: [String], enabled: { type: Boolean, default: true } }, { _id: false }) },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Guild', guildSchema);

@@ -23,6 +23,14 @@ const userSchema = new Schema({
   reputation: { type: Number, default: 0 },
   dailyStreak: { type: Number, default: 0 },
   lastDaily: { type: Date },
+  inventory: [{
+    name: { type: String },
+    purchasedAt: { type: Date, default: Date.now },
+  }],
+
+  // ── Social ──────────────────────────────────────────────────────────────────
+  bio: { type: String, default: null },
+  marriedTo: { type: String, default: null },
 
   // ── Cooldowns ───────────────────────────────────────────────────────────────
   lastXpGrant: { type: Date }
